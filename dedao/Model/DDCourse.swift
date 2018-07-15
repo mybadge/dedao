@@ -9,21 +9,28 @@
 import UIKit
 
 class DDCourse: NSObject {
-    //曲名
-    var name: String = ""
-    //mp3文件名
+    
+    /// mp3文件名
     var filename: String = ""
-    //歌词文件名
-    var lrcname: String = ""
-    //歌手名
-    var singer: String = ""
-    //封面图片名
+    /// rootPath
+    var rootPath: String = ""
+    /// 文章标题
+    var title: String = ""
+    /// 文章子标题
+    var subTitle: String = ""
+    /// 封面图片名
     var icon: String = ""
     var author: String = ""
+    /// 图片数组
+    var imgList = [String]()
     
     var listenTime: Double = 0.0
     var isListen: Bool = false
     
+    
+    override init() {
+        super.init()
+    }
     
     init(dict : [String : Any]) {
         super.init()
