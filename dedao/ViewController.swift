@@ -62,17 +62,25 @@ class ViewController: UIViewController {
         let fileM = FileManager.default
         let arr = fileM.subpaths(atPath: rootPath+"/"+rootFile)
         let course = DDCourse()
-        if let imgsArr = (arr?.filter{ $0.hasSuffix(".jpg") }) {
+        if let imgsArr = (arr?.filter{ $0.hasSuffix(".jpg") || $0.hasSuffix(".png") }) {
             course.imgList = imgsArr
             
             let totalTitle = imgsArr.first ?? ""
             let arr = totalTitle.components(separatedBy: "丨")
             if arr.count > 1 {
-                
                 course.title = arr[0]
                 course.subTitle = arr[1]
             } else {
-                course.title = arr[0]
+                let arr = totalTitle.components(separatedBy: " ").filter { (str) -> Bool in
+                    str != ""
+                }
+                
+                if arr.count > 1 {
+                    course.title = arr[0]
+                    course.subTitle = arr[1]
+                } else {
+                    course.title = arr[0]
+                }
             }
             if course.title.contains("薛兆丰的北大经济学课") {
                 course.title = course.title.replacingOccurrences(of: "薛兆丰的北大经济学课", with: "")
@@ -82,7 +90,7 @@ class ViewController: UIViewController {
             course.filename = mp3Name
         }
         course.author = "薛兆丰"
-    
+        
         return course
     }
     

@@ -72,6 +72,8 @@ class DDInfoViewController: UIViewController {
         self.btnClose?.isHidden = true
         
         startPlayingMusic()
+        
+        progressSlider.addTarget(self, action: #selector(sdChangeProgress(sender:)), for: .valueChanged)
     }
     
     private func updateUI() {
@@ -95,6 +97,14 @@ class DDInfoViewController: UIViewController {
                 }
             }
         })
+    }
+    
+    @objc private func sdChangeProgress(sender: UISlider) {
+        removeProgressTimer()
+        let vue = TimeInterval(floatLiteral: Double(sender.value))
+        let totleTime = MusicTools.getDuration()
+        MusicTools.setCurrentTime(totleTime*vue)
+        addProgressTimer()
     }
     
     
@@ -325,7 +335,7 @@ extension DDInfoViewController{
         infoDict[MPMediaItemPropertyAlbumTitle] = path
         infoDict[MPMediaItemPropertyArtist] = "薛兆丰"
         //        infoDict[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: UIImage(named: currentMusic.icon)!)
-        let img = #imageLiteral(resourceName: "3")
+        let img = #imageLiteral(resourceName: "lk")
         infoDict[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: img)
         infoDict[MPMediaItemPropertyPlaybackDuration] = MusicTools.getDuration()
         centerInfo.nowPlayingInfo = infoDict

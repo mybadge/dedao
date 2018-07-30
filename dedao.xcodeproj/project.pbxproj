@@ -12,11 +12,11 @@
 		0E354E1C20F97F2A00B68401 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0E354E1A20F97F2A00B68401 /* Main.storyboard */; };
 		0E354E1E20F97F2C00B68401 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0E354E1D20F97F2C00B68401 /* Assets.xcassets */; };
 		0E354E2120F97F2C00B68401 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0E354E1F20F97F2C00B68401 /* LaunchScreen.storyboard */; };
-		0E50907020F99875000A530D /* data.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0E50906F20F99875000A530D /* data.bundle */; };
 		0E50907220F99FF6000A530D /* DDInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E50907120F99FF6000A530D /* DDInfoViewController.swift */; };
 		0E50907620F9A5DF000A530D /* HMZPlayMusicTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E50907520F9A5DF000A530D /* HMZPlayMusicTool.swift */; };
 		0E9F741820FA249F007691D7 /* DDCourse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9F741720FA249F007691D7 /* DDCourse.swift */; };
 		0E9F741B20FA4AF2007691D7 /* MusicTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9F741A20FA4AF2007691D7 /* MusicTools.swift */; };
+		DA3702E4210E02BC00ABB17E /* data.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DA3702E3210E02BC00ABB17E /* data.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,11 +27,11 @@
 		0E354E1D20F97F2C00B68401 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0E354E2020F97F2C00B68401 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0E354E2220F97F2C00B68401 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0E50906F20F99875000A530D /* data.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = data.bundle; sourceTree = "<group>"; };
 		0E50907120F99FF6000A530D /* DDInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDInfoViewController.swift; sourceTree = "<group>"; };
 		0E50907520F9A5DF000A530D /* HMZPlayMusicTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMZPlayMusicTool.swift; sourceTree = "<group>"; };
 		0E9F741720FA249F007691D7 /* DDCourse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDCourse.swift; sourceTree = "<group>"; };
 		0E9F741A20FA4AF2007691D7 /* MusicTools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicTools.swift; sourceTree = "<group>"; };
+		DA3702E3210E02BC00ABB17E /* data.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = data.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +64,7 @@
 		0E354E1520F97F2A00B68401 /* dedao */ = {
 			isa = PBXGroup;
 			children = (
+				DA738D0B20FC7C400051FEB7 /* Resources */,
 				0E9F741920FA4AE5007691D7 /* Tool */,
 				0E9F741620FA2447007691D7 /* Model */,
 				0E354E1620F97F2A00B68401 /* AppDelegate.swift */,
@@ -72,7 +73,6 @@
 				0E50907520F9A5DF000A530D /* HMZPlayMusicTool.swift */,
 				0E354E1A20F97F2A00B68401 /* Main.storyboard */,
 				0E354E1D20F97F2C00B68401 /* Assets.xcassets */,
-				0E50906F20F99875000A530D /* data.bundle */,
 				0E354E1F20F97F2C00B68401 /* LaunchScreen.storyboard */,
 				0E354E2220F97F2C00B68401 /* Info.plist */,
 			);
@@ -93,6 +93,14 @@
 				0E9F741A20FA4AF2007691D7 /* MusicTools.swift */,
 			);
 			path = Tool;
+			sourceTree = "<group>";
+		};
+		DA738D0B20FC7C400051FEB7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DA3702E3210E02BC00ABB17E /* data.bundle */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -158,8 +166,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0E50907020F99875000A530D /* data.bundle in Resources */,
 				0E354E2120F97F2C00B68401 /* LaunchScreen.storyboard in Resources */,
+				DA3702E4210E02BC00ABB17E /* data.bundle in Resources */,
 				0E354E1E20F97F2C00B68401 /* Assets.xcassets in Resources */,
 				0E354E1C20F97F2A00B68401 /* Main.storyboard in Resources */,
 			);
