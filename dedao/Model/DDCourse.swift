@@ -14,6 +14,8 @@ class DDCourse: NSObject {
     var filename: String = ""
     /// rootPath
     var rootPath: String = ""
+    /// 父路径
+    var superPath: String = ""
     /// 文章标题
     var title: String = ""
     /// 文章子标题
@@ -24,7 +26,7 @@ class DDCourse: NSObject {
     /// 图片数组
     var imgList = [String]()
     
-    var listenTime: Double = 0.0
+    var listenTime: TimeInterval = 0.0
     var isListen: Bool = false
     
     

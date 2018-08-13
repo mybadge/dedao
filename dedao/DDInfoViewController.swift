@@ -16,7 +16,7 @@ let rootPath = Bundle.main.path(forResource: "data", ofType: "bundle")!
 
 class DDInfoViewController: UIViewController {
     
-    var path: String!
+    var course: DDCourse?
     /// 播放列表
     var musicList: [String] = []
     
@@ -77,7 +77,7 @@ class DDInfoViewController: UIViewController {
     }
     
     private func updateUI() {
-        guard let path = path else {
+        guard let path = course?.superPath else {
             return
         }
         
@@ -111,7 +111,7 @@ class DDInfoViewController: UIViewController {
     
     @IBAction func btnPlayAction(_ sender: UIButton) {
         
-        guard let p = path, let name = lbRadioName.text else {
+        guard let p = course?.superPath, let name = lbRadioName.text else {
             return
         }
         
@@ -152,7 +152,7 @@ class DDInfoViewController: UIViewController {
             return str01.localizedCompare(str02) == .orderedAscending
         }
         imgsArr.forEach { (imageName) in
-            let imagePath = rootPath + "/" + path + "/" + imageName
+            let imagePath = rootPath + "/" + course!.superPath + "/" + imageName
             let url = URL(fileURLWithPath: imagePath)
             do {
                 let data = try Data(contentsOf: url)
@@ -189,6 +189,9 @@ extension DDInfoViewController {
     fileprivate func startPlayingMusic(){
         var currentM = ""
         if currentMusic == nil {
+            guard let path = course?.superPath else {
+                return
+            }
             let filterArr = musicList.filter { (str) -> Bool in
                 return str.hasPrefix(path)
             }
@@ -199,7 +202,7 @@ extension DDInfoViewController {
             }
         } else {
             if let nameData = currentMusic.components(separatedBy: "/").first {
-                self.path = nameData
+                self.course?.superPath = nameData
                 updateUI()
             }
         }
@@ -246,6 +249,7 @@ extension DDInfoViewController {
     /// 实时更新界面上的进度的方法
     @objc fileprivate func updateProgress(){
         lbCurrentTime.text = stringWithTime(MusicTools.getCurrentTime())
+        self.course?.listenTime = MusicTools.getCurrentTime()
         progressSlider.value = Float(MusicTools.getCurrentTime() / MusicTools.getDuration())
     }
     
@@ -294,6 +298,9 @@ extension DDInfoViewController {
     @IBAction func playOrPauseBtnClick(sender: UIButton) {
         sender.isSelected = !sender.isSelected
         if sender.isSelected {
+            guard let path = course?.superPath else {
+                return
+            }
             let filterArr = musicList.filter { (str) -> Bool in
                 return str.hasPrefix(path)
             }
@@ -327,6 +334,10 @@ extension DDInfoViewController{
     
     /// 设置锁屏信息
     func setupLockInfo() {
+        
+        guard let path = course?.superPath else {
+            return
+        }
         //1获取锁屏中心
         let centerInfo =  MPNowPlayingInfoCenter.default()
         

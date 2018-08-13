@@ -115,15 +115,16 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let turePath = dataList[indexPath.row]
-        
-        performSegue(withIdentifier: "list-detail", sender: turePath)
+        let course = modelList[indexPath.row]
+        let path = dataList[indexPath.row]
+        course.superPath = path
+        performSegue(withIdentifier: "list-detail", sender: course)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "list-detail" {
             let vc = segue.destination as! DDInfoViewController
-            vc.path = sender as? String
+            vc.course = sender as? DDCourse
             vc.musicList = musicList
         }
         
