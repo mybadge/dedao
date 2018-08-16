@@ -17,6 +17,7 @@
 		0E9F741820FA249F007691D7 /* DDCourse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9F741720FA249F007691D7 /* DDCourse.swift */; };
 		0E9F741B20FA4AF2007691D7 /* MusicTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9F741A20FA4AF2007691D7 /* MusicTools.swift */; };
 		DA6FA2D12121D7AA000456CB /* data.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DA6FA2D02121D7AA000456CB /* data.bundle */; };
+		DA6FA2D52125C4AF000456CB /* DDTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6FA2D42125C4AF000456CB /* DDTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		0E9F741720FA249F007691D7 /* DDCourse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDCourse.swift; sourceTree = "<group>"; };
 		0E9F741A20FA4AF2007691D7 /* MusicTools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicTools.swift; sourceTree = "<group>"; };
 		DA6FA2D02121D7AA000456CB /* data.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = data.bundle; path = ../../../../data.bundle; sourceTree = "<group>"; };
+		DA6FA2D42125C4AF000456CB /* DDTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 		0E354E1520F97F2A00B68401 /* dedao */ = {
 			isa = PBXGroup;
 			children = (
+				DA6FA2D32125C494000456CB /* View */,
 				DA738D0B20FC7C400051FEB7 /* Resources */,
 				0E9F741920FA4AE5007691D7 /* Tool */,
 				0E9F741620FA2447007691D7 /* Model */,
@@ -93,6 +96,14 @@
 				0E9F741A20FA4AF2007691D7 /* MusicTools.swift */,
 			);
 			path = Tool;
+			sourceTree = "<group>";
+		};
+		DA6FA2D32125C494000456CB /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DA6FA2D42125C4AF000456CB /* DDTableViewCell.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		DA738D0B20FC7C400051FEB7 /* Resources */ = {
@@ -181,6 +192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0E354E1920F97F2A00B68401 /* ViewController.swift in Sources */,
+				DA6FA2D52125C4AF000456CB /* DDTableViewCell.swift in Sources */,
 				0E9F741B20FA4AF2007691D7 /* MusicTools.swift in Sources */,
 				0E9F741820FA249F007691D7 /* DDCourse.swift in Sources */,
 				0E50907620F9A5DF000A530D /* HMZPlayMusicTool.swift in Sources */,
@@ -262,7 +274,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -316,7 +328,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

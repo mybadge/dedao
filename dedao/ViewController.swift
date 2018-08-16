@@ -53,15 +53,16 @@ class ViewController: UIViewController {
     
     func handleData() {
         dataList.forEach { (rootFile) in
-            let course = generyCourseModel(rootFile: rootFile)
+            let course = generyCourseModel(superPath: rootFile)
             modelList.append(course)
         }
     }
     
-    func generyCourseModel(rootFile: String) -> DDCourse {
+    func generyCourseModel(superPath: String) -> DDCourse {
         let fileM = FileManager.default
-        let arr = fileM.subpaths(atPath: rootPath+"/"+rootFile)
+        let arr = fileM.subpaths(atPath: rootPath+"/"+superPath)
         let course = DDCourse()
+        course.superPath = superPath
         if let imgsArr = (arr?.filter{ $0.hasSuffix(".jpg") || $0.hasSuffix(".png") }) {
             course.imgList = imgsArr
             
@@ -106,11 +107,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cellId", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cellId", for: indexPath) as! DDTableViewCell
         let course = modelList[indexPath.row]
-        cell.textLabel?.text = course.title
+        //cell.textLabel?.text = course.title
         //cell.detailTextLabel?.text = "薛兆丰"
-        cell.detailTextLabel?.text = course.subTitle
+        cell.course = course
         return cell
     }
     
@@ -118,14 +119,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let course = modelList[indexPath.row]
         let path = dataList[indexPath.row]
         course.superPath = path
-        performSegue(withIdentifier: "list-detail", sender: course)
+        performSegue(withIdentifier: "list-detail", sender: indexPath.row)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "list-detail" {
             let vc = segue.destination as! DDInfoViewController
-            vc.course = sender as? DDCourse
-            vc.musicList = musicList
+            vc.index = sender as! Int
+            vc.musicList = modelList
         }
         
     }

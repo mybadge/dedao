@@ -15,10 +15,10 @@ let screenH = UIScreen.main.bounds.height
 let rootPath = Bundle.main.path(forResource: "data", ofType: "bundle")!
 
 class DDInfoViewController: UIViewController {
-    
-    var course: DDCourse?
+
+    var index: Int = 0
     /// 播放列表
-    var musicList: [String] = []
+    var musicList: [DDCourse] = []
     
     fileprivate var progressTimer : Timer?
     //fileprivate var lrcTimer : CADisplayLink?
@@ -74,27 +74,20 @@ class DDInfoViewController: UIViewController {
         startPlayingMusic()
         
         progressSlider.addTarget(self, action: #selector(sdChangeProgress(sender:)), for: .valueChanged)
+        //[_progressSlider addTarget:self action:@selector(sliderStop:) forControlEvents:UIControlEventTouchUpInside];
+        progressSlider.addTarget(self, action: #selector(sliderStop(sender:)), for: .touchUpInside)
     }
     
     private func updateUI() {
-        guard let path = course?.superPath else {
-            return
-        }
-        
-        let fileM = FileManager.default
-        let arr = fileM.subpaths(atPath: rootPath+"/"+path)
-        imgsArr = (arr?.filter{ $0.hasSuffix(".jpg") })!
-        
+        let course = musicList[index]
+        lbRadioName.text = course.filename
+        imgsArr = musicList[index].imgList
         lbImageName.text = ""
-        arr?.forEach({ (name) in
-            if name.hasSuffix(".mp3") {
-                lbRadioName.text = name
-            } else if name.hasSuffix(".jpg") {
-                if lbImageName.text!.count == 0 {
-                    lbImageName.text = name
-                } else {
-                    lbImageName.text = lbImageName.text! + "\n" + name
-                }
+        imgsArr.forEach({ (name) in
+            if lbImageName.text!.count == 0 {
+                lbImageName.text = name
+            } else {
+                lbImageName.text = lbImageName.text! + "\n" + name
             }
         })
     }
@@ -104,18 +97,22 @@ class DDInfoViewController: UIViewController {
         let vue = TimeInterval(floatLiteral: Double(sender.value))
         let totleTime = MusicTools.getDuration()
         MusicTools.setCurrentTime(totleTime*vue)
+    }
+    
+    @objc private func sliderStop(sender: UISlider) {
         addProgressTimer()
     }
     
     
-    
     @IBAction func btnPlayAction(_ sender: UIButton) {
         
-        guard let p = course?.superPath, let name = lbRadioName.text else {
-            return
-        }
+//        guard let p = course?.superPath, let name = lbRadioName.text else {
+//            return
+//        }
+        let course = musicList[index]
+        let p = course.superPath
         
-        if name == "****" {
+        if course.filename == "****" {
             return
         }
         
@@ -127,7 +124,7 @@ class DDInfoViewController: UIViewController {
             player?.stop()
         }
         if player == nil {
-            let url = rootPath + "/" + p + "/" + name
+            let url = rootPath + "/" + p + "/" + course.filename
             player = HMZPlayMusicTool.playMusic(name: url)
         }
     }
@@ -151,8 +148,9 @@ class DDInfoViewController: UIViewController {
         imgsArr.sort { (str01, str02) -> Bool in
             return str01.localizedCompare(str02) == .orderedAscending
         }
+        let course = musicList[index]
         imgsArr.forEach { (imageName) in
-            let imagePath = rootPath + "/" + course!.superPath + "/" + imageName
+            let imagePath = rootPath + "/" + course.superPath + "/" + imageName
             let url = URL(fileURLWithPath: imagePath)
             do {
                 let data = try Data(contentsOf: url)
@@ -187,33 +185,15 @@ class DDInfoViewController: UIViewController {
 extension DDInfoViewController {
     
     fileprivate func startPlayingMusic(){
-        var currentM = ""
-        if currentMusic == nil {
-            guard let path = course?.superPath else {
-                return
-            }
-            let filterArr = musicList.filter { (str) -> Bool in
-                return str.hasPrefix(path)
-            }
-            if let m = filterArr.first {
-                currentMusic = m
-            } else {
-                return
-            }
-        } else {
-            if let nameData = currentMusic.components(separatedBy: "/").first {
-                self.course?.superPath = nameData
-                updateUI()
-            }
-        }
-        
-        currentM = currentMusic!
+        //var currentM = ""
+        let course = musicList[index]
+        let path = rootPath+"/"+course.superPath+"/"+course.filename
+        updateUI()
         
         
         
-        
-        MusicTools.playMusic(rootPath+"/"+currentM)
-        
+        MusicTools.playMusic(path)
+        MusicTools.setCurrentTime(course.listenTime)
         MusicTools.setPlayerDelegate(self)
         
         //2改变界面内容
@@ -249,7 +229,9 @@ extension DDInfoViewController {
     /// 实时更新界面上的进度的方法
     @objc fileprivate func updateProgress(){
         lbCurrentTime.text = stringWithTime(MusicTools.getCurrentTime())
-        self.course?.listenTime = MusicTools.getCurrentTime()
+        let course = musicList[index]
+        course.listenTime = MusicTools.getCurrentTime()
+        course.totalTime = MusicTools.getDuration()
         progressSlider.value = Float(MusicTools.getCurrentTime() / MusicTools.getDuration())
     }
     
@@ -266,6 +248,7 @@ extension DDInfoViewController {
     
     /// 下一首
     @IBAction func nextMusicBtnClick(sender: UIButton) {
+        
         switchMusic(isNext : true)
     }
     
@@ -276,21 +259,25 @@ extension DDInfoViewController {
     
     /// 切换歌曲(向下/向上)
     private func switchMusic(isNext : Bool){
-        let currentIndex = musicList.index(of: currentMusic)!
-        var index : Int = 0
-        if isNext {
-            index = currentIndex + 1
-            index = index > musicList.count - 1 ? 0 : currentIndex + 1
-        } else {
-            index = currentIndex - 1
-            index = index < 0 ? musicList.count - 1 : currentIndex - 1
+    
+        let course = musicList[index]
+        if Int(course.listenTime) == Int(course.totalTime) {
+            course.isListen = true
         }
-        currentMusic = musicList[index]
+        
+        if isNext {
+            index += 1
+            index = index > musicList.count - 1 ? 0 : index
+        } else {
+            index -= 1
+            index = index < 0 ? musicList.count - 1 : index
+        }
+        
         startPlayingMusic()
+        
         //切歌的时候,若按钮为暂停状态,恢复为播放,恢复动画
         if !btnPlayPause.isSelected {
             btnPlayPause.isSelected = !btnPlayPause.isSelected
-            //iconImageView.layer.resumeAnim()
         }
     }
     
@@ -298,22 +285,13 @@ extension DDInfoViewController {
     @IBAction func playOrPauseBtnClick(sender: UIButton) {
         sender.isSelected = !sender.isSelected
         if sender.isSelected {
-            guard let path = course?.superPath else {
-                return
-            }
-            let filterArr = musicList.filter { (str) -> Bool in
-                return str.hasPrefix(path)
-            }
-            if let currentM = filterArr.first {
-                currentMusic = currentM
-                let name = rootPath + "/" + currentMusic
-                MusicTools.playMusic(name)
-            }
+            let course = musicList[index]
+            let path = course.superPath
+            let name = rootPath + "/" + path + "/" + course.filename
+            MusicTools.playMusic(name)
             
-            //iconImageView.layer.resumeAnim()
         } else {
             MusicTools.pauseMusic()
-            //iconImageView.layer.pauseAnim()
         }
     }
     
@@ -335,19 +313,18 @@ extension DDInfoViewController{
     /// 设置锁屏信息
     func setupLockInfo() {
         
-        guard let path = course?.superPath else {
-            return
-        }
+        let path = musicList[index].superPath
         //1获取锁屏中心
         let centerInfo =  MPNowPlayingInfoCenter.default()
         
         //2设置信息
         var infoDict = [String : Any]()
-        infoDict[MPMediaItemPropertyAlbumTitle] = path
-        infoDict[MPMediaItemPropertyArtist] = "薛兆丰"
-        //        infoDict[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: UIImage(named: currentMusic.icon)!)
+        infoDict[MPMediaItemPropertyAlbumTitle] = imgsArr.first ?? ""
+        infoDict[MPMediaItemPropertyArtist] = path
         let img = #imageLiteral(resourceName: "lk")
-        infoDict[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: img)
+        infoDict[MPMediaItemPropertyArtwork] = MPMediaItemArtwork.init(boundsSize: img.size, requestHandler: { (size) -> UIImage in
+            return img
+        })
         infoDict[MPMediaItemPropertyPlaybackDuration] = MusicTools.getDuration()
         centerInfo.nowPlayingInfo = infoDict
         

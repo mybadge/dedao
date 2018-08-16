@@ -27,11 +27,21 @@ class DDCourse: NSObject {
     var imgList = [String]()
     
     var listenTime: TimeInterval = 0.0
+    var totalTime: TimeInterval = 0.0
     var isListen: Bool = false
-    
+    var isSelected = false
     
     override init() {
         super.init()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        aDecoder.value(forKey: "filename")
+        aDecoder.value(forKey: "superPath")
+        aDecoder.value(forKey: "title")
+        aDecoder.value(forKey: "subTitle")
+        aDecoder.value(forKey: "isListen")
+        aDecoder.value(forKey: "imgList")
     }
     
     init(dict : [String : Any]) {
@@ -43,4 +53,17 @@ class DDCourse: NSObject {
     override func setValue(_ value: Any?, forUndefinedKey key: String) {
         
     }
+}
+
+extension DDCourse: NSCoding {
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(filename, forKey: "filename")
+        aCoder.encode(superPath, forKey: "superPath")
+        aCoder.encode(title, forKey: "title")
+        aCoder.encode(subTitle, forKey: "subTitle")
+        aCoder.encode(isListen, forKey: "isListen")
+        aCoder.encode(imgList, forKey: "imgList")
+    }
+    
+    
 }
