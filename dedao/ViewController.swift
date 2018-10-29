@@ -23,8 +23,16 @@ class ViewController: UIViewController {
     
     var musicList = [String]()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+//        if let data = NSKeyedUnarchiver.unarchiveObject(withFile: documentsPath) as? [DDCourse] {
+//            modelList = data
+//        }
         
         do {
             var array = try FileManager.default.contentsOfDirectory(atPath: path)
@@ -52,9 +60,12 @@ class ViewController: UIViewController {
     }
     
     func handleData() {
+        let arr = modelList.map {$0.superPath}
         dataList.forEach { (rootFile) in
-            let course = generyCourseModel(superPath: rootFile)
-            modelList.append(course)
+            if !arr.contains(rootFile) {
+                let course = generyCourseModel(superPath: rootFile)
+                modelList.append(course)
+            }
         }
     }
     

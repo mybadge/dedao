@@ -16,8 +16,8 @@
 		0E50907620F9A5DF000A530D /* HMZPlayMusicTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E50907520F9A5DF000A530D /* HMZPlayMusicTool.swift */; };
 		0E9F741820FA249F007691D7 /* DDCourse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9F741720FA249F007691D7 /* DDCourse.swift */; };
 		0E9F741B20FA4AF2007691D7 /* MusicTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9F741A20FA4AF2007691D7 /* MusicTools.swift */; };
-		DA6FA2D12121D7AA000456CB /* data.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DA6FA2D02121D7AA000456CB /* data.bundle */; };
 		DA6FA2D52125C4AF000456CB /* DDTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6FA2D42125C4AF000456CB /* DDTableViewCell.swift */; };
+		DA901FCA21868CF1007EF3E4 /* data.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DA901FC921868CF1007EF3E4 /* data.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,8 +32,8 @@
 		0E50907520F9A5DF000A530D /* HMZPlayMusicTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMZPlayMusicTool.swift; sourceTree = "<group>"; };
 		0E9F741720FA249F007691D7 /* DDCourse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDCourse.swift; sourceTree = "<group>"; };
 		0E9F741A20FA4AF2007691D7 /* MusicTools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicTools.swift; sourceTree = "<group>"; };
-		DA6FA2D02121D7AA000456CB /* data.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = data.bundle; path = ../../../../data.bundle; sourceTree = "<group>"; };
 		DA6FA2D42125C4AF000456CB /* DDTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDTableViewCell.swift; sourceTree = "<group>"; };
+		DA901FC921868CF1007EF3E4 /* data.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = data.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +109,7 @@
 		DA738D0B20FC7C400051FEB7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				DA6FA2D02121D7AA000456CB /* data.bundle */,
+				DA901FC921868CF1007EF3E4 /* data.bundle */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -178,7 +178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0E354E2120F97F2C00B68401 /* LaunchScreen.storyboard in Resources */,
-				DA6FA2D12121D7AA000456CB /* data.bundle in Resources */,
+				DA901FCA21868CF1007EF3E4 /* data.bundle in Resources */,
 				0E354E1E20F97F2C00B68401 /* Assets.xcassets in Resources */,
 				0E354E1C20F97F2A00B68401 /* Main.storyboard in Resources */,
 			);

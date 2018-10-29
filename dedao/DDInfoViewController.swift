@@ -14,6 +14,10 @@ let screenW = UIScreen.main.bounds.width
 let screenH = UIScreen.main.bounds.height
 let rootPath = Bundle.main.path(forResource: "data", ofType: "bundle")!
 
+//#define UserFilePath [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"userModel.data"]
+let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] + "music.data"
+
+
 class DDInfoViewController: UIViewController {
 
     var index: Int = 0
@@ -263,6 +267,9 @@ extension DDInfoViewController {
         let course = musicList[index]
         if Int(course.listenTime) == Int(course.totalTime) {
             course.isListen = true
+        }
+        DispatchQueue.global().async {
+            NSKeyedArchiver.archiveRootObject(self.musicList, toFile: documentsPath)
         }
         
         if isNext {
