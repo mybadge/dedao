@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  DDListController.swift
 //  dedao
 //
 //  Created by  赵志丹 on 2018/7/14.
@@ -7,61 +7,78 @@
 //
 
 import UIKit
+/// 数组连接分隔符
+let arrJoinSepector = "^^"
 
-class ViewController: UIViewController {
+class DDListController: BaseViewController {
     
     @IBOutlet weak var tableView: UITableView!    
     
     let path = Bundle.main.path(forResource: "data", ofType: "bundle")!
-    var dataList = [String]() {
+    
+    var modelList = [DDCourse]() {
         didSet {
             tableView.reloadData()
         }
     }
     
-    var modelList = [DDCourse]()
     
-    var musicList = [String]()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loadData()
+    }
+    
+    func setupData() {
         do {
             var array = try FileManager.default.contentsOfDirectory(atPath: path)
             array.sort { (str01, str02) -> Bool in
                 return str01.localizedStandardCompare(str02) == .orderedAscending
             }
-            dataList = array
+            handleData(array)
             
-            let allFiles = FileManager.default.subpaths(atPath: path)
-            
-            if let list = allFiles?.filter({ (str) -> Bool in
-                return str.hasSuffix(".mp3")
-            }) {
-                musicList = list
-            }
-            
-            musicList.sort { (str01, str02) -> Bool in
-                return str01.localizedStandardCompare(str02) == .orderedAscending
-            }
-            handleData()
-            print("modelList=\(modelList)")
         } catch let error as NSError {
             print("get file path error: \(error)")
         }
     }
+
     
-    func handleData() {
-        dataList.forEach { (rootFile) in
-            let course = generyCourseModel(superPath: rootFile)
-            modelList.append(course)
+    func loadData() {
+        DDSqlHelper.share.getDataList { (list) in
+            if list.count == 0 {
+                self.getData()
+            } else {
+                list.forEach({
+                    $0.imgList = $0.imgArrStr?.components(separatedBy: arrJoinSepector).compactMap({$0}) ?? []
+                })
+                self.modelList = list.sorted { (mod1, mod2) -> Bool in
+                    return mod1.superPath!.localizedStandardCompare(mod2.superPath!) == .orderedAscending
+                }
+            }
         }
+    }
+    
+    func getData() {
+        setupData()
+        DDSqlHelper.share.batchInsert()
+        print("modelList=\(modelList)")
+    }
+    
+    
+    func handleData(_ list: [String]) {
+        modelList = list.map { generyCourseModel(superPath: $0) }
     }
     
     func generyCourseModel(superPath: String) -> DDCourse {
         let fileM = FileManager.default
         let arr = fileM.subpaths(atPath: rootPath+"/"+superPath)
-        let course = DDCourse()
+        let course = DDCourse.creat()
         course.superPath = superPath
         if let imgsArr = (arr?.filter{ $0.hasSuffix(".jpg") || $0.hasSuffix(".png") }) {
             course.imgList = imgsArr
@@ -83,12 +100,13 @@ class ViewController: UIViewController {
                     course.title = arr[0]
                 }
             }
-            if course.title.contains("薛兆丰的北大经济学课") {
-                course.title = course.title.replacingOccurrences(of: "薛兆丰的北大经济学课", with: "")
+            if course.title?.contains("薛兆丰的北大经济学课") ?? false {
+                course.title = course.title?.replacingOccurrences(of: "薛兆丰的北大经济学课", with: "")
             }
+            course.imgArrStr = imgsArr.joined(separator: arrJoinSepector)
         }
         if let mp3Name = arr?.filter({ $0.hasSuffix(".mp3") }).first {
-            course.filename = mp3Name
+            course.fileName = mp3Name
         }
         course.author = "薛兆丰"
         
@@ -97,9 +115,9 @@ class ViewController: UIViewController {
     
 }
 
-extension ViewController: UITableViewDelegate, UITableViewDataSource {
+extension DDListController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataList.count
+        return modelList.count
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -108,28 +126,15 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellId", for: indexPath) as! DDTableViewCell
-        let course = modelList[indexPath.row]
-        //cell.textLabel?.text = course.title
-        //cell.detailTextLabel?.text = "薛兆丰"
-        cell.course = course
+        cell.course = modelList[indexPath.row]
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let course = modelList[indexPath.row]
-        let path = dataList[indexPath.row]
-        course.superPath = path
-        performSegue(withIdentifier: "list-detail", sender: indexPath.row)
+        let vc = DDInfoViewController.initVC()
+        vc.index = indexPath.row
+        vc.musicList = modelList
+        navigationController?.pushViewController(vc, animated: true)
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "list-detail" {
-            let vc = segue.destination as! DDInfoViewController
-            vc.index = sender as! Int
-            vc.musicList = modelList
-        }
-        
-    }
-    
 }
 

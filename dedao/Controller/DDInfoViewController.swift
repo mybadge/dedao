@@ -10,11 +10,11 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 
-let screenW = UIScreen.main.bounds.width
-let screenH = UIScreen.main.bounds.height
+let ScreenW = UIScreen.main.bounds.width
+let ScreenH = UIScreen.main.bounds.height
 let rootPath = Bundle.main.path(forResource: "data", ofType: "bundle")!
 
-class DDInfoViewController: UIViewController {
+class DDInfoViewController: BaseViewController {
 
     var index: Int = 0
     /// 播放列表
@@ -27,8 +27,6 @@ class DDInfoViewController: UIViewController {
     
     // MARK: - 控件属性
     @IBOutlet weak var progressSlider: UISlider!
-    @IBOutlet weak var iconImageView: UIImageView!
-    @IBOutlet weak var iconViewWidthCons: NSLayoutConstraint!
     @IBOutlet weak var lbCurrentTime: UILabel!
     @IBOutlet weak var lbTotalTime: UILabel!
     
@@ -44,7 +42,7 @@ class DDInfoViewController: UIViewController {
     
     /// 是否暂停
     private var isPause = false
-    var player: AVAudioPlayer?
+    //var player: AVAudioPlayer?
     var imgsArr: [String] = [String]()
     var scrollView: UIScrollView?
     var btnClose: UIButton?
@@ -55,6 +53,10 @@ class DDInfoViewController: UIViewController {
         setupUI()
         
         updateUI()
+    }
+    
+    override static func storyBoardName() -> StoryBoardName {
+        return .main
     }
     
     private func setupUI() {
@@ -73,14 +75,12 @@ class DDInfoViewController: UIViewController {
         
         startPlayingMusic()
         
-        progressSlider.addTarget(self, action: #selector(sdChangeProgress(sender:)), for: .valueChanged)
-        //[_progressSlider addTarget:self action:@selector(sliderStop:) forControlEvents:UIControlEventTouchUpInside];
-        progressSlider.addTarget(self, action: #selector(sliderStop(sender:)), for: .touchUpInside)
+        progressSlider.addTarget(self, action: #selector(sdChangeProgress(sender:)), for: .touchUpInside)
     }
     
     private func updateUI() {
         let course = musicList[index]
-        lbRadioName.text = course.filename
+        lbRadioName.text = course.fileName
         imgsArr = musicList[index].imgList
         lbImageName.text = ""
         imgsArr.forEach({ (name) in
@@ -97,80 +97,36 @@ class DDInfoViewController: UIViewController {
         let vue = TimeInterval(floatLiteral: Double(sender.value))
         let totleTime = MusicTools.getDuration()
         MusicTools.setCurrentTime(totleTime*vue)
-    }
-    
-    @objc private func sliderStop(sender: UISlider) {
         addProgressTimer()
     }
     
     
     @IBAction func btnPlayAction(_ sender: UIButton) {
         
-//        guard let p = course?.superPath, let name = lbRadioName.text else {
-//            return
-//        }
         let course = musicList[index]
-        let p = course.superPath
+        let p = course.superPath!
         
-        if course.filename == "****" {
+        if course.fileName == "****" {
             return
         }
         
         if isPause {
             isPause = false
-            player?.pause()
+            MusicTools.pauseMusic()
         } else {
             isPause = true
-            player?.stop()
+            MusicTools.stopMusic()
         }
-        if player == nil {
-            let url = rootPath + "/" + p + "/" + course.filename
-            player = HMZPlayMusicTool.playMusic(name: url)
-        }
+        let url = rootPath + "/" + p + "/" + course.fileName!
+        MusicTools.playMusic(url)
     }
     
     @IBAction func btnCatAction(_ sender: UIButton) {
         
-        self.btnClose?.isHidden = false
-    
-        
-        //self.additionalSafeAreaInsets.top
-        let scrollView = UIScrollView(frame: self.view.bounds)
-        self.scrollView = scrollView
-        scrollView.backgroundColor = .green
-        view.addSubview(scrollView)
-        
-        self.btnClose?.isHidden = false
-        
-        
-        //let imageName = imgsArr[0]
-        var y:CGFloat = 0
-        imgsArr.sort { (str01, str02) -> Bool in
-            return str01.localizedCompare(str02) == .orderedAscending
-        }
-        let course = musicList[index]
-        imgsArr.forEach { (imageName) in
-            let imagePath = rootPath + "/" + course.superPath + "/" + imageName
-            let url = URL(fileURLWithPath: imagePath)
-            do {
-                let data = try Data(contentsOf: url)
-                let img = UIImage(data: data, scale: UIScreen.main.scale)
-                if let image = img {
-                    let imageViewH = screenW/image.size.width*image.size.height
-                    let imageView = UIImageView(image: image)
-                    
-                    imageView.frame = CGRect(x: 0, y: y, width: screenW, height: imageViewH)
-                    imageView.backgroundColor = .red
-                    imageView.contentMode = .scaleAspectFit
-                    scrollView.addSubview(imageView)
-                    y += imageView.bounds.size.height
-                    scrollView.contentSize = CGSize(width: screenW, height: y)
-                }
-            }
-            catch  {
-                print("error=\(error)")
-            }
-        }
+        let vc = DDImageDetailController.initVC()
+        vc.course = musicList[index]
+        vc.imgsArr = imgsArr
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func btnCloseAction() {
@@ -185,15 +141,18 @@ class DDInfoViewController: UIViewController {
 extension DDInfoViewController {
     
     fileprivate func startPlayingMusic(){
-        //var currentM = ""
         let course = musicList[index]
-        let path = rootPath+"/"+course.superPath+"/"+course.filename
+        guard let fileName = course.fileName else {
+            index += 1
+            startPlayingMusic()
+            return
+        }
+        
+        let path = rootPath+"/"+course.superPath!+"/"+fileName
         updateUI()
         
-        
-        
         MusicTools.playMusic(path)
-        MusicTools.setCurrentTime(course.listenTime)
+        MusicTools.setCurrentTime(TimeInterval(course.listenTime))
         MusicTools.setPlayerDelegate(self)
         
         //2改变界面内容
@@ -223,7 +182,7 @@ extension DDInfoViewController {
     /// 添加歌曲进度定时器
     fileprivate func addProgressTimer(){
         progressTimer = Timer(timeInterval: 1.0, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
-        RunLoop.main.add(progressTimer!, forMode: .commonModes)
+        RunLoop.main.add(progressTimer!, forMode: RunLoop.Mode.common)
     }
     
     /// 实时更新界面上的进度的方法
@@ -262,7 +221,7 @@ extension DDInfoViewController {
     
         let course = musicList[index]
         if Int(course.listenTime) == Int(course.totalTime) {
-            course.isListen = true
+            course.listened = true
         }
         
         if isNext {
@@ -279,6 +238,7 @@ extension DDInfoViewController {
         if !btnPlayPause.isSelected {
             btnPlayPause.isSelected = !btnPlayPause.isSelected
         }
+        DDSqlHelper.share.saveContext()
     }
     
     /// 播放/暂停(暂停时移除动画, 恢复播放时重新添加)
@@ -286,8 +246,8 @@ extension DDInfoViewController {
         sender.isSelected = !sender.isSelected
         if sender.isSelected {
             let course = musicList[index]
-            let path = course.superPath
-            let name = rootPath + "/" + path + "/" + course.filename
+            let path = course.superPath!
+            let name = rootPath + "/" + path + "/" + course.fileName!
             MusicTools.playMusic(name)
             
         } else {
