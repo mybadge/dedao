@@ -25,6 +25,7 @@
 		E58308D5219554E3002801CD /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58308D4219554E3002801CD /* String.swift */; };
 		E58308DE2195783F002801CD /* DDCourse+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58308DC2195783E002801CD /* DDCourse+CoreDataClass.swift */; };
 		E58308DF2195783F002801CD /* DDCourse+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58308DD2195783F002801CD /* DDCourse+CoreDataProperties.swift */; };
+		E58308E121959AF4002801CD /* MKNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58308E021959AF4002801CD /* MKNotificationCenter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		E58308D4219554E3002801CD /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		E58308DC2195783E002801CD /* DDCourse+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DDCourse+CoreDataClass.swift"; sourceTree = "<group>"; };
 		E58308DD2195783F002801CD /* DDCourse+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DDCourse+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		E58308E021959AF4002801CD /* MKNotificationCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKNotificationCenter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 		0E9F741920FA4AE5007691D7 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				E58308E021959AF4002801CD /* MKNotificationCenter.swift */,
 				E58308A621952D1A002801CD /* UIViewController+CreatVC.swift */,
 				0E50907520F9A5DF000A530D /* HMZPlayMusicTool.swift */,
 				0E9F741A20FA4AF2007691D7 /* MusicTools.swift */,
@@ -235,6 +238,7 @@
 				E58308D5219554E3002801CD /* String.swift in Sources */,
 				0E50907220F99FF6000A530D /* DDInfoViewController.swift in Sources */,
 				0E354E1720F97F2A00B68401 /* AppDelegate.swift in Sources */,
+				E58308E121959AF4002801CD /* MKNotificationCenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

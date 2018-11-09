@@ -134,6 +134,9 @@ class DDInfoViewController: BaseViewController {
         scrollView?.removeFromSuperview()
     }
     
+    deinit {
+        print("你释放了吗")
+    }
 }
 
 
@@ -244,14 +247,16 @@ extension DDInfoViewController {
     /// 播放/暂停(暂停时移除动画, 恢复播放时重新添加)
     @IBAction func playOrPauseBtnClick(sender: UIButton) {
         sender.isSelected = !sender.isSelected
+        let course = musicList[index]
         if sender.isSelected {
-            let course = musicList[index]
             let path = course.superPath!
             let name = rootPath + "/" + path + "/" + course.fileName!
             MusicTools.playMusic(name)
             
         } else {
             MusicTools.pauseMusic()
+            course.listenTime = MusicTools.getCurrentTime()
+            DDSqlHelper.share.saveContext()
         }
     }
     

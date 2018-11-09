@@ -35,9 +35,6 @@ class DDImageDetailController: BaseViewController {
         }
         
         
-        //self.scrollView = scrollView
-        scrollView.backgroundColor = .green
-        
         var y:CGFloat = 0
         imgsArr.sort { (str01, str02) -> Bool in
             return str01.localizedCompare(str02) == .orderedAscending
@@ -54,7 +51,6 @@ class DDImageDetailController: BaseViewController {
                     let imageView = UIImageView(image: image)
                     
                     imageView.frame = CGRect(x: 0, y: y, width: ScreenW, height: imageViewH)
-                    imageView.backgroundColor = .red
                     imageView.contentMode = .scaleAspectFit
                     scrollView.addSubview(imageView)
                     y += imageView.bounds.size.height
