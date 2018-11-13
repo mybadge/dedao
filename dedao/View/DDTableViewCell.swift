@@ -32,11 +32,17 @@ class DDTableViewCell: UITableViewCell {
         }
         lbTitle.text = course.title
         lbSubTitle.text = course.imgList.first ?? ""
-        lbDetail.text = String(format: "时长: %.1f", course.listenTime)
-        if course.isListen {
+        lbDetail.text = "时长: \(TimeInterval(course.listenTime).songsTime)"
+        if course.listened {
             lbSubDetail.text = "已听完"
         } else {
-            lbSubDetail.text = "咱未听"
+            lbSubDetail.text = "暂未听"
+        }
+        
+        if course.selected {
+            contentView.backgroundColor = UIColor.lightGray
+        } else {
+            contentView.backgroundColor = UIColor.white
         }
     }
 }
