@@ -66,6 +66,7 @@ extension MusicTools{
     }
     
     class func getCurrentTime() -> TimeInterval{
+        
         return player?.currentTime ?? 0
     }
     
@@ -75,6 +76,10 @@ extension MusicTools{
     
     class func setPlayerDelegate(_ delegate : AVAudioPlayerDelegate){
         player?.delegate = delegate
+    }
+    
+    class func isPlaying() -> Bool {
+        return player?.isPlaying ?? false
     }
     
 }
