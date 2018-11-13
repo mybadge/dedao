@@ -26,3 +26,45 @@ public class DDCourse: NSManagedObject {
         return model
     }
 }
+
+
+extension DDCourse {
+    /// 生成 模型
+    class func generyCourseModel(superPath: String) -> DDCourse {
+        let fileM = FileManager.default
+        let arr = fileM.subpaths(atPath: rootPath+"/"+superPath)
+        let course = DDCourse.creat()
+        course.superPath = superPath
+        if let imgsArr = (arr?.filter{ $0.hasSuffix(".jpg") || $0.hasSuffix(".png") }) {
+            course.imgList = imgsArr
+            
+            let totalTitle = imgsArr.first ?? ""
+            let arr = totalTitle.components(separatedBy: "丨")
+            if arr.count > 1 {
+                course.title = arr[0]
+                course.subTitle = arr[1]
+            } else {
+                let arr = totalTitle.components(separatedBy: " ").filter { (str) -> Bool in
+                    str != ""
+                }
+                
+                if arr.count > 1 {
+                    course.title = arr[0]
+                    course.subTitle = arr[1]
+                } else {
+                    course.title = arr[0]
+                }
+            }
+            if course.title?.contains("薛兆丰的北大经济学课") ?? false {
+                course.title = course.title?.replacingOccurrences(of: "薛兆丰的北大经济学课", with: "")
+            }
+            course.imgArrStr = imgsArr.joined(separator: arrJoinSepector)
+        }
+        if let mp3Name = arr?.filter({ $0.hasSuffix(".mp3") }).first {
+            course.fileName = mp3Name
+        }
+        course.author = "薛兆丰"
+        
+        return course
+    }
+}
