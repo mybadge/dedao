@@ -38,5 +38,11 @@ class DDTableViewCell: UITableViewCell {
         } else {
             lbSubDetail.text = "暂未听"
         }
+        
+        if course.selected {
+            contentView.backgroundColor = UIColor.lightGray
+        } else {
+            contentView.backgroundColor = UIColor.white
+        }
     }
 }

@@ -11,11 +11,8 @@ import UIKit
 /// 图片查看..
 class DDImageDetailController: BaseViewController {
 
-    var imgsArr: [String] = [String]()
     var course: DDCourse?
-    //@IBOutlet private weak var btnClose: UIButton!
     @IBOutlet private weak var scrollView: UIScrollView!
-    //@IBOutlet weak var contentV: UIView!
 
     override func viewDidLoad() {
         title = "图片信息"
@@ -36,6 +33,7 @@ class DDImageDetailController: BaseViewController {
         
         
         var y:CGFloat = 0
+        var imgsArr = course.imgList
         imgsArr.sort { (str01, str02) -> Bool in
             return str01.localizedCompare(str02) == .orderedAscending
         }

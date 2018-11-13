@@ -7,16 +7,15 @@
 //
 
 import UIKit
-/// 数组连接分隔符
-let arrJoinSepector = "^^"
+import PullToRefresh
 
 class DDListController: BaseViewController {
     
-    @IBOutlet weak var tableView: UITableView!    
+    var selectedIndex: Int = 0
     
-    let path = Bundle.main.path(forResource: "data", ofType: "bundle")!
+    @IBOutlet private weak var tableView: UITableView!
     
-    var modelList = [DDCourse]() {
+    private var modelList = [DDCourse]() {
         didSet {
             tableView.reloadData()
         }
@@ -28,28 +27,23 @@ class DDListController: BaseViewController {
         tableView.reloadData()
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadData()
+        tableView.addPullToRefresh(PullToRefresh()) { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.25, execute: {
+                self?.tableView.endAllRefreshing()
+                self?.tableView.reloadData()
+            })
+        }
+        
+        setupData()
     }
     
-    func setupData() {
-        do {
-            var array = try FileManager.default.contentsOfDirectory(atPath: path)
-            array.sort { (str01, str02) -> Bool in
-                return str01.localizedStandardCompare(str02) == .orderedAscending
-            }
-            handleData(array)
-            
-        } catch let error as NSError {
-            print("get file path error: \(error)")
-        }
-    }
+    
 
     
-    func loadData() {
+    func setupData() {
         DDSqlHelper.share.getDataList { (list) in
             if list.count == 0 {
                 self.getData()
@@ -57,62 +51,34 @@ class DDListController: BaseViewController {
                 list.forEach({
                     $0.imgList = $0.imgArrStr?.components(separatedBy: arrJoinSepector).compactMap({$0}) ?? []
                 })
-                self.modelList = list.sorted { (mod1, mod2) -> Bool in
+                let sortList = list.sorted { (mod1, mod2) -> Bool in
                     return mod1.superPath!.localizedStandardCompare(mod2.superPath!) == .orderedAscending
                 }
+                self.selectedIndex = sortList.firstIndex(where: { $0.selected }) ?? 0
+                self.modelList = sortList
             }
         }
     }
     
     func getData() {
-        setupData()
+        handleData()
         DDSqlHelper.share.batchInsert()
         print("modelList=\(modelList)")
     }
     
-    
-    func handleData(_ list: [String]) {
-        modelList = list.map { generyCourseModel(superPath: $0) }
-    }
-    
-    func generyCourseModel(superPath: String) -> DDCourse {
-        let fileM = FileManager.default
-        let arr = fileM.subpaths(atPath: rootPath+"/"+superPath)
-        let course = DDCourse.creat()
-        course.superPath = superPath
-        if let imgsArr = (arr?.filter{ $0.hasSuffix(".jpg") || $0.hasSuffix(".png") }) {
-            course.imgList = imgsArr
+    func handleData() {
+        do {
+            var array = try FileManager.default.contentsOfDirectory(atPath: rootPath)
+            array.sort { (str01, str02) -> Bool in
+                return str01.localizedStandardCompare(str02) == .orderedAscending
+            }
             
-            let totalTitle = imgsArr.first ?? ""
-            let arr = totalTitle.components(separatedBy: "丨")
-            if arr.count > 1 {
-                course.title = arr[0]
-                course.subTitle = arr[1]
-            } else {
-                let arr = totalTitle.components(separatedBy: " ").filter { (str) -> Bool in
-                    str != ""
-                }
-                
-                if arr.count > 1 {
-                    course.title = arr[0]
-                    course.subTitle = arr[1]
-                } else {
-                    course.title = arr[0]
-                }
-            }
-            if course.title?.contains("薛兆丰的北大经济学课") ?? false {
-                course.title = course.title?.replacingOccurrences(of: "薛兆丰的北大经济学课", with: "")
-            }
-            course.imgArrStr = imgsArr.joined(separator: arrJoinSepector)
+            modelList = array.map { DDCourse.generyCourseModel(superPath: $0) }
+            
+        } catch let error as NSError {
+            print("get file path error: \(error)")
         }
-        if let mp3Name = arr?.filter({ $0.hasSuffix(".mp3") }).first {
-            course.fileName = mp3Name
-        }
-        course.author = "薛兆丰"
-        
-        return course
     }
-    
 }
 
 extension DDListController: UITableViewDelegate, UITableViewDataSource {
@@ -131,10 +97,21 @@ extension DDListController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = DDInfoViewController.initVC()
-        vc.index = indexPath.row
-        vc.musicList = modelList
-        navigationController?.pushViewController(vc, animated: true)
+        let _ = self.tableView(tableView, cellForRowAt: IndexPath(row: selectedIndex, section: 0))
+        modelList[selectedIndex].selected = false
+        selectedIndex = indexPath.row
+        modelList[selectedIndex].selected = true
+        
+        var vc = self.children.first as? DDInfoViewController
+        if vc == nil {
+            vc = DDInfoViewController.initVC()
+            vc!.index = indexPath.row
+            vc!.musicList = modelList
+            self.addChild(vc!)
+        } else {
+            vc!.index = indexPath.row
+        }
+        navigationController?.pushViewController(vc!, animated: true)
     }
 }
 
